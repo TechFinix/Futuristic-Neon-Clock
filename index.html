@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Clock - Futuristic Layout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Orbitron', monospace;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
+    }
+
+    .neon-glow {
+      text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+    }
+
+    .clock-container, .stopwatch-container, .worldclock-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00ffff;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 30px rgba(0, 255, 255, 0.1);
+      border-radius: 1rem;
+    }
+
+    .btn-glow, .futuristic-btn {
+      transition: all 0.3s ease;
+    }
+    .btn-glow:hover, .futuristic-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    /* Futuristic Button */
+    .futuristic-btn {
+      display: inline-block;
+      padding: 16px 36px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 2px solid #0ff;
+      border-radius: 12px;
+      background: linear-gradient(45deg, #0ff, #00f, #0ff);
+      background-size: 200% 200%;
+      box-shadow: 0 0 20px #0ff, 0 0 40px #00f, 0 0 60px #0ff inset;
+      position: relative;
+      overflow: hidden;
+      margin: 20px auto;
+    }
+    .futuristic-btn::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, rgba(255,255,255,0.3), rgba(0,255,255,0.3), rgba(0,0,255,0.3));
+      transform: rotate(45deg);
+      transition: all 0.5s ease;
+    }
+    .futuristic-btn:hover {
+      color: #0ff;
+      background-position: 100% 0;
+    }
+    .futuristic-btn:hover::before {
+      top: -20%;
+      left: -20%;
+    }
+    
+     /* Footer Style */
+    footer {
+      padding: 1rem;
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    footer span {
+      color: #0ff;
+      font-weight: 600;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .futuristic-btn {
+        padding: 14px 28px;
+        font-size: 16px;
+      }
+
+      footer {
+        font-size: 0.8rem;
+        padding: 0.8rem;
+      }
+    }
+
+/* Neon Advertisement Container */
+.neon-ad {
+  background: rgba(0,0,0,0.8);
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff inset;
+  border-radius: 1rem;
+  transition: 0.3s ease-in-out;
+}
+.neon-ad:hover {
+  box-shadow: 0 0 40px #0ff, 0 0 60px #0ff inset, 0 0 80px #0ff;
+}
+
+
+
+  </style>
+</head>
+<body class="text-white flex flex-col min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="flex justify-center gap-6 p-4 bg-black/40 border-b border-cyan-500">
+    <button onclick="showPage('clockPage')" class="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 font-bold btn-glow">Clock</button>
+    <button onclick="showPage('stopwatchPage')" class="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 font-bold btn-glow">Stopwatch</button>
+    <button onclick="showPage('worldClockPage')" class="px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 font-bold btn-glow">World Clock</button>
+  </nav>
+
+  <!-- 3-Column Layout -->
+  <div class="flex flex-1 flex-col md:flex-row">
+
+    <!-- Left Column (15%) -->
+   <!-- <div class="hidden md:flex md:w-3/20 bg-gray-900 items-center justify-center p-4">
+  <div class="text-center text-cyan-400 font-bold">
+    <a href="../techfinix-logo-final.png" target="_blank">
+      <img src="../promo-banner.png" 
+           alt="Techfinix Logo" 
+           class="w-50 md:w-40 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+    </a>
+    <div class="mt-2">Advertisement</div>
+  </div>
+</div> -->
+<!-- Right Ad Column (15% width on md+) -->
+<div class="hidden md:flex md:w-3/20 items-center justify-center p-4">
+  <!-- Neon board container -->
+  <div class="relative w-full rounded-3xl p-4 right-ad-board">
+    <!-- Image slot -->
+    <a href="../techfinix-logo-final.png" target="_blank"
+       class="block mx-auto pointer-events-auto">
+      <img
+        src="promo-banner.png"
+        alt="Ad"
+        class="block mx-auto
+               w-[70%] md:w-[80%]     /* image uses 70–80% of board width */
+               max-w-full             /* never exceed board */
+               aspect-square          /* keep it nicely framed; remove if you want natural height */
+               object-contain         /* show full image, no crop */
+               rounded-lg
+               hover:scale-105 transition-transform duration-300"
+      />
+    </a>
+
+    <!-- (Optional) label at the bottom -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-cyan-400 font-semibold text-sm">
+      <!-- More Ads / Info -->
+    </div>
+  </div>
+</div>
+
+<style>
+/* Minimal styling for the tall right board; keep if you need a fixed height */
+.right-ad-board{
+  min-height: 70vh;         /* tall board like in your screenshot */
+  /* If your neon border is already defined elsewhere, you can remove the rest */
+  border-radius: 22px;
+  position: relative;
+}
+
+/* If you still want the rotating neon border, attach your previous ::before here */
+</style>
+
+
+    <!-- Main Column (70%) -->
+    <div class="flex-1 md:w-14/20 flex flex-col items-center justify-start px-4 py-8 gap-6">
+      
+      <!-- CLOCK PAGE -->
+      <div id="clockPage" class="w-full flex flex-col items-center">
+        <div class="clock-container p-8 md:p-12 text-center relative">
+          <div id="clock" class="text-4xl md:text-6xl lg:text-7xl font-black neon-glow mb-4">00:00:00 AM</div>
+          <div id="date" class="text-lg md:text-xl text-cyan-300 font-semibold">Loading...</div>
+        </div>
+      </div>
+
+      <!-- STOPWATCH PAGE -->
+      <div id="stopwatchPage" class="hidden w-full flex flex-col items-center">
+        <div class="stopwatch-container p-8 md:p-12 text-center relative">
+          <div id="stopwatch" class="text-4xl md:text-6xl lg:text-7xl font-black neon-glow mb-6">00:00:00.00</div>
+          <div class="flex gap-4 justify-center mb-6">
+            <button id="startStopBtn" class="px-6 py-3 rounded-lg bg-gradient-to-r from-green-500 to-cyan-500 font-semibold btn-glow">Start</button>
+            <button id="lapBtn" class="px-6 py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 font-semibold btn-glow">Lap</button>
+            <button id="resetBtn" class="px-6 py-3 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 font-semibold btn-glow">Reset</button>
+          </div>
+          <div id="laps" class="text-left text-sm space-y-2 max-h-48 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- WORLD CLOCK PAGE -->
+      <div id="worldClockPage" class="hidden w-full flex flex-col items-center">
+        <div class="worldclock-container p-8 md:p-12 text-center relative">
+          <div id="worldCountry" class="text-xl font-bold text-yellow-300 mb-2">Loading...</div>
+          <div id="worldLocation" class="text-md text-gray-400 mb-6">Location</div>
+          <div id="worldTime" class="text-4xl md:text-6xl lg:text-7xl font-black neon-glow mb-4">00:00:00</div>
+          <div id="worldDate" class="text-lg text-cyan-300 font-semibold mb-6">Loading...</div>
+          <div class="flex gap-4 justify-center">
+            <button onclick="prevCountry()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 font-semibold btn-glow">⬅ Prev</button>
+            <button onclick="nextCountry()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 font-semibold btn-glow">Next ➡</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Centralized Advertise Button -->
+      <a href="advertise-form.html" class="futuristic-btn">Advertise With Us</a>
+    </div>
+    
+
+    <!-- Right Column (15%) -->
+    <!-- <div class="hidden md:flex md:w-3/20 bg-gray-900 items-center justify-center p-4 neon-ad">
+      <div class="text-center text-cyan-400 font-bold">
+        <a href="../techfinix-logo-final.png" target="_blank">
+      <img src="../techfinix-logo-final.png" 
+           alt="Techfinix Logo" 
+           class="w-32 md:w-40 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+    </a>
+        More Ads / Info
+      </div>
+    </div>
+  </div> -->
+<!-- Right Ad Column (15% width on md+) -->
+<div class="hidden md:flex md:w-3/20 items-center justify-center p-4">
+  <!-- Neon board container -->
+  <div class="relative w-full rounded-3xl p-4 right-ad-board">
+    <!-- Image slot -->
+    <a href="../techfinix-logo-final.png" target="_blank"
+       class="block mx-auto pointer-events-auto">
+      <img
+        src="promo-banner.png"
+        alt="Ad"
+        class="block mx-auto
+               w-[70%] md:w-[80%]     /* image uses 70–80% of board width */
+               max-w-full             /* never exceed board */
+               aspect-square          /* keep it nicely framed; remove if you want natural height */
+               object-contain         /* show full image, no crop */
+               rounded-lg
+               hover:scale-105 transition-transform duration-300"
+      />
+    </a>
+
+    <!-- (Optional) label at the bottom -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-cyan-400 font-semibold text-sm">
+      <!-- More Ads / Info -->
+    </div>
+  </div>
+</div>
+
+<style>
+/* Minimal styling for the tall right board; keep if you need a fixed height */
+.right-ad-board{
+  min-height: 70vh;         /* tall board like in your screenshot */
+  /* If your neon border is already defined elsewhere, you can remove the rest */
+  border-radius: 22px;
+  position: relative;
+}
+
+/* If you still want the rotating neon border, attach your previous ::before here */
+</style>
+
+ </div>
+
+  <!-- Footer (always centered) -->
+  <footer class="w-full text-center py-4 ">
+    Developed by <span class="font-bold">TechFinix</span>
+  </footer>
+
+</div>
+
+
+
+
+  <!-- JS (Clock, Stopwatch, World Clock logic same as before) -->
+  <script>
+    // Navigation
+    function showPage(pageId) {
+      document.getElementById('clockPage').classList.add('hidden');
+      document.getElementById('stopwatchPage').classList.add('hidden');
+      document.getElementById('worldClockPage').classList.add('hidden');
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    // CLOCK
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour12:true,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      document.getElementById('date').textContent = now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    }
+    setInterval(updateClock,1000); updateClock();
+
+    // STOPWATCH
+    let stopwatchInterval, startTime, elapsedTime=0, running=false;
+    const stopwatchDisplay=document.getElementById('stopwatch');
+    const startStopBtn=document.getElementById('startStopBtn');
+    const lapBtn=document.getElementById('lapBtn');
+    const resetBtn=document.getElementById('resetBtn');
+    const lapsContainer=document.getElementById('laps');
+
+    function formatTime(ms){
+      let totalSeconds=Math.floor(ms/1000);
+      let hours=Math.floor(totalSeconds/3600);
+      let minutes=Math.floor((totalSeconds%3600)/60);
+      let seconds=totalSeconds%60;
+      let centiseconds=Math.floor((ms%1000)/10);
+      return `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}.${String(centiseconds).padStart(2,'0')}`;
+    }
+    function updateStopwatch(){
+      const now=Date.now();
+      elapsedTime=now-startTime;
+      stopwatchDisplay.textContent=formatTime(elapsedTime);
+    }
+    startStopBtn.addEventListener('click',()=>{
+      if(!running){
+        startTime=Date.now()-elapsedTime;
+        stopwatchInterval=setInterval(updateStopwatch,10);
+        running=true;
+        startStopBtn.textContent="Pause";
+      } else {
+        clearInterval(stopwatchInterval);
+        running=false;
+        startStopBtn.textContent="Resume";
+      }
+    });
+    lapBtn.addEventListener('click',()=>{
+      if(running){
+        const lapTime=formatTime(elapsedTime);
+        const lapDiv=document.createElement('div');
+        lapDiv.className="bg-gray-800 p-2 rounded-lg";
+        lapDiv.textContent="Lap: "+lapTime;
+        lapsContainer.prepend(lapDiv);
+      }
+    });
+    resetBtn.addEventListener('click',()=>{
+      clearInterval(stopwatchInterval);
+      elapsedTime=0; running=false;
+      stopwatchDisplay.textContent="00:00:00.00";
+      lapsContainer.innerHTML="";
+      startStopBtn.textContent="Start";
+    });
+
+    // WORLD CLOCK
+    const countries = [
+      { name: "Nepal", location: "Kathmandu", tz: "Asia/Kathmandu" },
+      { name: "India", location: "New Delhi", tz: "Asia/Kolkata" },
+      { name: "China", location: "Beijing", tz: "Asia/Shanghai" },
+      { name: "Japan", location: "Tokyo", tz: "Asia/Tokyo" },
+      { name: "USA", location: "New York", tz: "America/New_York" }
+    ];
+    let currentIndex=0;
+
+    function updateWorldClock(){
+      const country=countries[currentIndex];
+      const now=new Date();
+      document.getElementById("worldCountry").textContent=country.name;
+      document.getElementById("worldLocation").textContent=country.location;
+      document.getElementById("worldTime").textContent=new Intl.DateTimeFormat('en-US',{
+        hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true,timeZone:country.tz
+      }).format(now);
+      document.getElementById("worldDate").textContent=new Intl.DateTimeFormat('en-US',{
+        weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:country.tz
+      }).format(now);
+    }
+    function nextCountry(){ currentIndex=(currentIndex+1)%countries.length; updateWorldClock();}
+    function prevCountry(){ currentIndex=(currentIndex-1+countries.length)%countries.length; updateWorldClock();}
+    setInterval(updateWorldClock,1000); updateWorldClock();
+  </script>
+</body>
+
+ 
+  
+</html>
