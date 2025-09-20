@@ -1,0 +1,263 @@
+<?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
+$submitted = false;
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $to = "official.techfinix@gmail.com";
+    $subject = "New Advertisement Submission";
+
+    $company = $_POST["company"];
+    $contact = $_POST["contact"];
+    $email = $_POST["email"];
+    $phone = $_POST["phone"];
+    $title = $_POST["title"];
+    $target = $_POST["target"];
+    $notes = $_POST["notes"];
+
+    $message = "
+New Advertisement Submission:\n\n
+Company: $company\n
+Contact Person: $contact\n
+Email: $email\n
+Phone: $phone\n
+Campaign Title: $title\n
+Target URL: $target\n
+Notes: $notes
+";
+
+    $headers = "From: $email";
+
+    // Handle file upload
+    if(isset($_FILES["adfile"]) && $_FILES["adfile"]["error"] == 0){
+        $file_tmp = $_FILES["adfile"]["tmp_name"];
+        $file_name = $_FILES["adfile"]["name"];
+        $file_type = $_FILES["adfile"]["type"];
+
+        $content = chunk_split(base64_encode(file_get_contents($file_tmp)));
+
+        $uid = md5(uniqid(time()));
+        $headers .= "\r\nMIME-Version: 1.0";
+        $headers .= "\r\nContent-Type: multipart/mixed; boundary=\"".$uid."\"";
+
+        $body = "--".$uid."\r\n";
+        $body .= "Content-type:text/plain; charset=utf-8\r\n";
+        $body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+        $body .= $message."\r\n\r\n";
+        $body .= "--".$uid."\r\n";
+        $body .= "Content-Type: ".$file_type."; name=\"".$file_name."\"\r\n";
+        $body .= "Content-Transfer-Encoding: base64\r\n";
+        $body .= "Content-Disposition: attachment; filename=\"".$file_name."\"\r\n\r\n";
+        $body .= $content."\r\n\r\n";
+        $body .= "--".$uid."--";
+
+        mail($to, $subject, $body, $headers);
+    } else {
+        mail($to, $subject, $message, $headers);
+    }
+
+    $submitted = true;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Ad Submission</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+    color:#fff; margin:0; padding:0;
+    display:flex; justify-content:center; align-items:flex-start;
+    min-height:100vh; padding-top:40px;
+}
+
+.form-container {
+    background: rgba(20,20,40,0.85);
+    padding:40px 25px;
+    border-radius:15px;
+    box-shadow:0 0 25px #0ff,0 0 50px #00f, inset 0 0 25px rgba(0,255,255,0.2);
+    max-width:900px; width:95%;
+    animation: glow 4s infinite alternate;
+}
+
+@keyframes glow {
+    from{ box-shadow:0 0 20px #0ff,0 0 40px #00f,inset 0 0 10px rgba(0,255,255,0.3);}
+    to{box-shadow:0 0 40px #ff00ff,0 0 80px #0ff,inset 0 0 20px rgba(255,0,255,0.4);}
+}
+
+h1 { text-align:center; margin-bottom:30px; font-size:2rem; color:#0ff; text-shadow:0 0 10px #0ff,0 0 20px #00f;}
+
+.success-message { text-align:center; margin-bottom:15px; color:#0ff; text-shadow:0 0 10px #0ff; font-weight:bold;}
+
+form {
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    gap:15px 25px;
+    align-items:center;
+}
+
+label { font-size:14px; font-weight:bold; text-align:right; text-shadow:0 0 8px #0ff; padding-right:10px; }
+
+input, select, textarea {
+    width:100% !important;  /* Force full width */
+    max-width:100%;
+    padding:12px;
+    border:2px solid #0ff;
+    border-radius:8px;
+    background: rgba(0,0,0,0.6);
+    color:#fff;
+    font-size:14px;
+    outline:none;
+    box-shadow:0 0 8px #0ff;
+    transition: all 0.3s ease;
+    box-sizing:border-box; /* Ensure padding included in width */
+}
+
+input:focus, textarea:focus, select:focus { border-color:#ff00ff; box-shadow:0 0 15px #ff00ff,0 0 30px #0ff;}
+textarea { min-height:100px; resize:vertical; }
+
+.full-row { grid-column: span 2; }
+
+button {
+    margin-top:20px;
+    width:100%;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    border:none;
+    border-radius:8px;
+    background:linear-gradient(90deg,#00f,#0ff,#ff00ff);
+    color:#fff;
+    cursor:pointer;
+    text-transform:uppercase;
+    text-shadow:0 0 8px #000;
+    box-shadow:0 0 20px #0ff,0 0 40px #00f;
+    transition: all 0.4s ease;
+}
+
+button:hover {
+    background:linear-gradient(90deg,#ff00ff,#0ff,#00f);
+    box-shadow:0 0 30px #ff00ff,0 0 60px #0ff; transform: scale(1.05);
+}
+
+/* Fully Responsive Styles */
+@media(max-width:900px){
+    form{ grid-template-columns:1fr; }
+    label{text-align:left; padding-right:0;}
+    .full-row{ grid-column:span 1; }
+}
+
+@media(max-width:480px){
+    .form-container{ padding:25px 15px; }
+    h1{ font-size:1.5rem; }
+    input,select,textarea,button{ font-size:13px; padding:10px; }
+}
+
+
+
+</style>
+</head>
+
+<body>
+<div class="form-container">
+    <h1>🚀 Neon Ad Submission</h1>
+
+    <form id="adForm" action="" method="POST" enctype="multipart/form-data">
+    
+      <label for="contact">Full Name:</label>
+      <input type="text" id="contact" name="contact" required>
+      
+      <label for="company">Company / Brand Name:</label>
+      <input type="text" id="company" name="company" required>
+
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" name="phone">
+
+      <label for="title">Ad Title / Campaign Name:</label>
+      <input type="text" id="title" name="title" required>
+
+      <label for="adfile">Upload Ad File:</label>
+      <input type="file" id="adfile" name="adfile" accept=".jpg,.png,.gif,.mp4,.webm,.zip" required>
+
+      <label for="target">Target URL (click-through link):</label>
+      <input type="url" id="target" name="target" >
+
+      <label for="notes">Additional Notes:</label>
+      <textarea id="notes" name="notes"></textarea>
+
+      <div class="full-row">
+        <button type="submit" onclick="window.location.href='index.html'">Submit Advertisement</button>
+      </div>
+    </form>
+</div>
+
+
+<!-- Neon Futuristic Popup -->
+<div id="thankYouPopup" style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid #00ffff;
+    padding: 30px 50px;
+    font-size: 24px;
+    color: #00ffff;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff inset;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 1000;
+">✅ Advertisement Submitted Successfully!</div>
+
+<script>
+const form = document.getElementById('adForm');
+const popup = document.getElementById('thankYouPopup');
+
+form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Stop form from submitting immediately
+
+    // Check if the form is valid
+    if (form.checkValidity()) {
+        // Show the popup
+        popup.style.opacity = '1';
+        popup.style.pointerEvents = 'auto';
+
+        // Optional: reset form fields
+        form.reset();
+
+        // Hide popup after 2 seconds
+        setTimeout(() => {
+            popup.style.opacity = '0';
+            popup.style.pointerEvents = 'none';
+
+	 // Redirect to main page
+            window.location.href = 'index-Neon-clock.html'; // <-- Replace with your main page URL    
+ }, 2000);
+
+    } else {
+        // If invalid, trigger HTML5 validation messages
+        form.reportValidity();
+    }
+});
+</script>
+</body>
+
+
+
+</html>
